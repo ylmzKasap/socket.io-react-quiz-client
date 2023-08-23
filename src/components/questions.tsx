@@ -38,7 +38,7 @@ const Questions: React.FC<QuestionTypes> = ({users, questions, unansweredQuestio
         {options && <div className="info-box">{pageNumber + 1}/{questions.length}</div>}
         {options ? <>
           <div className="image-container">
-          <img src={word && (isProduction ? `${serverUrl}/` : '' + word.image_path)} alt="question" />
+          <img src={word && (isProduction ? `${serverUrl}/` : '') + word.image_path} alt="question" />
         </div>
         <div className="option-container">
           {options.map((option, index) => <div className="test-option"
