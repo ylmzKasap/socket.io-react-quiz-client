@@ -1,6 +1,6 @@
 import { Socket, io } from "socket.io-client";
 import { AnswerTypes, WordTypes } from './components/types';
-const isProduction = import.meta.env.MODE === 'production';
+import { isProduction, serverUrl } from './defaults/constants';
 
 interface ISocket extends Socket {
   userID?: string;
@@ -9,7 +9,7 @@ interface ISocket extends Socket {
   joinedRoomID?: string;
 }
 
-const socket = io(isProduction ? 'https://socket-io-react-quiz-server.onrender.com' : window.location.pathname, 
+const socket = io(isProduction ? serverUrl : window.location.pathname, 
   { autoConnect: false }) as ISocket;
 
 if (!isProduction) {

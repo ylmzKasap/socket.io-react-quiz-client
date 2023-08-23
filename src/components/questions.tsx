@@ -3,6 +3,7 @@ import { AnswerTypes, UserTypes, WordTypes } from './types';
 import socket from '../socket';
 import PlayerLister from './player_lister';
 import { shuffle } from '../functions/shuffle';
+import { isProduction, serverUrl } from '../defaults/constants';
 
 
 const Questions: React.FC<QuestionTypes> = ({users, questions, unansweredQuestions, answers, handleRoomLeave}) => {
@@ -37,7 +38,7 @@ const Questions: React.FC<QuestionTypes> = ({users, questions, unansweredQuestio
         {options && <div className="info-box">{pageNumber + 1}/{questions.length}</div>}
         {options ? <>
           <div className="image-container">
-          <img src={word && word.image_path} alt="question" />
+          <img src={word && (isProduction ? `${serverUrl}/` : '' + word.image_path)} alt="question" />
         </div>
         <div className="option-container">
           {options.map((option, index) => <div className="test-option"
