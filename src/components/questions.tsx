@@ -11,11 +11,12 @@ const Questions: React.FC<QuestionTypes> = ({users, questions, unansweredQuestio
 
   const getOptions = (words: WordTypes[], pageNumber: number) => {
     const word = words[pageNumber];
-    if (!word) return false;
+    if (!word) return [];
+    const shuffledQuestions = shuffle(questions);
 
     const options = [{...word, isCorrect: true}] as WordTypes[];
-    for (let i=0; options.length < 4; i++) {
-      const currentWord = questions[i];
+    for (let i=0; options.length < 4 || i > questions.length; i++) {
+      const currentWord = shuffledQuestions[i];
       if (currentWord.question_id !== word.question_id
         && currentWord.target_translation !== word.target_translation) {
           options.push({...currentWord, isCorrect: false});
@@ -31,21 +32,23 @@ const Questions: React.FC<QuestionTypes> = ({users, questions, unansweredQuestio
   }
 
   const word = unansweredQuestions[pageNumber];
-  const options = getOptions(unansweredQuestions, pageNumber);
+  const answeredQuestions = questions.length - unansweredQuestions.length;
+  const isDone = answeredQuestions + pageNumber >= questions.length;
   return (
     <div id="questions">
       <div className="question-container margin-top">
-        {options && <div className="info-box">{pageNumber + 1}/{questions.length}</div>}
-        {options ? <>
+        {!isDone && <div className="info-box">{answeredQuestions + pageNumber + 1}/{questions.length}</div>}
+        {!isDone ? <>
           <div className="image-container">
           <img src={word && (isProduction ? `${serverUrl}/` : '') + word.image_path} alt="question" />
         </div>
         <div className="option-container">
-          {options.map((option, index) => <div className="test-option"
+          {getOptions(unansweredQuestions, pageNumber).map((option, index) => 
+          <div className="test-option"
             onClick={() => handleOptionClick(option)}
-            key={index}>
+            key={`${option.target_translation}-${index}`}>
             {option.target_translation}
-            </div>)}
+          </div>)}
         </div>
         </> 
         : <>

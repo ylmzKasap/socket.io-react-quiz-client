@@ -278,6 +278,7 @@ button:not(:first-of-type) {
   cursor: pointer;
   font-size: var(--big-font);
   padding: calc(1vw + 1vh + 10px) calc(4vw + 1vh + 10px);
+  width: calc(5vw + 6vh + 30px);
   text-align: center;
   font-weight: bold;
   color: white;
