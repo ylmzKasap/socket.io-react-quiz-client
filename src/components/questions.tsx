@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { AnswerTypes, UserTypes, WordTypes } from './types';
 import socket from '../socket';
 import PlayerLister from './player_lister';
@@ -34,6 +34,7 @@ const Questions: React.FC<QuestionTypes> = ({users, questions, unansweredQuestio
   const word = unansweredQuestions[pageNumber];
   const answeredQuestions = questions.length - unansweredQuestions.length;
   const isDone = answeredQuestions + pageNumber >= questions.length;
+  const options = useMemo(() => getOptions(unansweredQuestions, pageNumber), [pageNumber, unansweredQuestions]);
   return (
     <div id="questions">
       <div className="question-container margin-top">
@@ -43,7 +44,7 @@ const Questions: React.FC<QuestionTypes> = ({users, questions, unansweredQuestio
           <img src={word && (isProduction ? `${serverUrl}/` : '') + word.image_path} alt="question" />
         </div>
         <div className="option-container">
-          {getOptions(unansweredQuestions, pageNumber).map((option, index) => 
+          {options.map((option, index) => 
           <div className="test-option"
             onClick={() => handleOptionClick(option)}
             key={`${option.target_translation}-${index}`}>
