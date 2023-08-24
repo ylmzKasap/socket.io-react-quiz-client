@@ -53,9 +53,11 @@ export const PlayerLister: React.FC<PlayerListerTypes> = (
     <div className="connected-users">
       <div className="header">{headerDescription}</div>
         {sortUsers(activePlayers, answers ? undefined : socket.userID) // Get current player to top if not sorting based on answers
+          .filter(player => {return connectedOnly 
+            ? true
+            : player.correct + player.incorrect !== 0 || player.connected})
           .map((player, i) => {
             const { correct, incorrect } = player;
-            if (!connectedOnly && correct + incorrect === 0 && !player.connected) return <></>;
 
             return <div className="connected-player" key={`player-${i}`}>
                 <div className="player-number">{i + 1}</div>

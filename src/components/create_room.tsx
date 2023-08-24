@@ -67,7 +67,7 @@ const CreateRoom: React.FC<CreateRoomTypes> = (
           : 'Connected players' 
         }
         players={users}
-        connectedOnly={true}
+        connectedOnly={!roundEnded}
         answers={roundStarted || roundEnded ? answers : undefined}
       />
       <button className="exit-button" type="button" onClick={handleDeleteRoom}>
