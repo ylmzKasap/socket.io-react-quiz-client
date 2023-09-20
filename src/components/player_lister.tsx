@@ -8,26 +8,46 @@ export const PlayerLister: React.FC<PlayerListerTypes> = (
     let filteredPlayers = [] as UserTypes[];
     if (connectedOnly) {
       // Filter out players with no name while displaying them in the standings.
-      filteredPlayers = players.filter(u => u.connected && (answers ? u.username : true));
+      filteredPlayers = players.filter(u => u.connected /* && (answers ? u.username : true) */);
     } else {
       filteredPlayers = [...players];
     }
-    
-    return !answers
-      ? filteredPlayers.map(player => ({...player, correct: 0, incorrect: 0}))
-      : filteredPlayers.map(player => {
-      let correct = 0; let incorrect = 0;
-      const userAnswers = answers.filter(answer => answer.userID === player.userID);
-      for (const answer of userAnswers) {
-        if (answer.is_correct) correct += 1;
-        else incorrect += 1;
-      }
-      return {
-        ...player,
-        correct: correct,
-        incorrect: incorrect
+
+    if (!answers) return filteredPlayers.map(player => ({...player, correct: 0, incorrect: 0}));
+
+    if (connectedOnly) {
+      return filteredPlayers.map(player => {
+        let correct = 0; let incorrect = 0;
+        const userAnswers = answers.filter(answer => answer.userID === player.userID);
+        for (const answer of userAnswers) {
+          if (answer.is_correct) correct += 1;
+          else incorrect += 1;
+        }
+        return {
+          ...player,
+          correct: correct,
+          incorrect: incorrect
+      }})
     }
-    })
+
+    const userAnswers: {
+      [key: string]: {username: string; correct: number; incorrect: number; connected: boolean;}} = {};
+      
+    for (const answer of answers) {
+      if (!userAnswers[answer.userID]) {
+        const player = players.find(p => p.userID === answer.userID);
+        userAnswers[answer.userID] = {
+          username: answer.username,
+          connected: player?.connected || false,
+          correct: 0,
+          incorrect: 0}
+
+      }
+      if (answer.is_correct) userAnswers[answer.userID].correct += 1;
+      else if (!answer.is_correct) userAnswers[answer.userID].incorrect += 1;
+    }
+    
+    return Object.entries(userAnswers).map(answer => ({...answer[1], userID: answer[0]}))
   }
 
   function sortUsers(users: UserTypesWithAnswers[], userID?: string) {

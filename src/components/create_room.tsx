@@ -40,6 +40,11 @@ const CreateRoom: React.FC<CreateRoomTypes> = (
       setLiveApp({type: 'roomPin', value: roomPin});
     });
 
+    socket.on('room error', error => {
+      setLiveApp({type: 'roomError', value: error});
+      setLiveApp({type: 'deleteRoomHost'});
+    })
+
     return () => {
       socket.off('create room');
       socket.off('room created');

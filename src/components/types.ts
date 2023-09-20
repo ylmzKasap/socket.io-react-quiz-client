@@ -22,6 +22,7 @@ export interface UserTypesWithAnswers extends UserTypes {
 
 export interface AnswerTypes {
   userID: string;
+  username: string;
   question_id: string;
   is_correct: boolean;
 }
@@ -32,5 +33,14 @@ export interface RoomTypes {
   answers: AnswerTypes[];
   roundStarted: boolean;
   roundEnded: boolean;
+  room_id?: string;
+}
+
+export interface RoomResponseTypes {
+  room_pin: string;
+  questions: string;
+  answers: string[];
+  roundStarted: string;
+  roundEnded: string;
   room_id?: string;
 }

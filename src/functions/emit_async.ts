@@ -1,4 +1,4 @@
-import { RoomTypes } from '../components/types';
+import { RoomResponseTypes } from '../components/types';
 import socket from '../socket';
 
 export function asyncEmit(eventName: string, data: string): Promise<AsyncEmitData> {
@@ -12,4 +12,4 @@ export function asyncEmit(eventName: string, data: string): Promise<AsyncEmitDat
   });
 }
 
-type AsyncEmitData = string | RoomTypes;
+type AsyncEmitData = string | RoomResponseTypes;

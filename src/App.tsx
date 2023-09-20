@@ -7,7 +7,7 @@ import ViewSelector from './components/view_selector';
 import JoinRoom from './components/join_room';
 import CreateRoom from './components/create_room';
 import { asyncEmit } from './functions/emit_async';
-import { AnswerTypes, RoomTypes, UserTypes, WordTypes } from './components/types';
+import { AnswerTypes, RoomResponseTypes, RoomTypes, UserTypes, WordTypes } from './components/types';
 import { liveAppDefaults } from './defaults/live_app_default';
 import { handleLiveApp } from './reducers/live_app_reducer';
 import PlayerLister from './components/player_lister';
@@ -66,8 +66,15 @@ const App: React.FC = () => {
       setLiveApp({type: 'username', value: updatedUser});
     });
 
-    socket.on('room details', (room: RoomTypes) => {
-      setLiveApp({type: 'roomDetails', value: room, userID: socket.userID as string});
+    socket.on('room details', (room: RoomResponseTypes) => {
+      setLiveApp({type: 'roomDetails', value: {
+        questions: JSON.parse(room.questions) as WordTypes[],
+        answers: room.answers.map(a => JSON.parse(a)) as AnswerTypes[],
+        roomPin: parseInt(room.room_pin),
+        roundEnded: room.roundEnded === 'true',
+        roundStarted: room.roundStarted === 'true'
+        }, 
+        userID: socket.userID as string});
     });
 
     socket.on('answer', (answer: AnswerTypes) => {
@@ -123,7 +130,7 @@ const App: React.FC = () => {
       if (res !== 'Username taken') {
         setLiveApp({type: 'view', value: 'question'});
       }
-    });
+    })
   }
 
   const handleRoomLeave = () => {

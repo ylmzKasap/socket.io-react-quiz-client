@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { asyncEmit } from '../functions/emit_async';
-import { RoomTypes } from './types';
+import { AnswerTypes, RoomResponseTypes, WordTypes } from './types';
 import socket from '../socket';
 import { LiveAppActionTypes } from '../reducers/live_app_reducer';
 import RoomPin from './room_pin';
@@ -17,11 +17,20 @@ const JoinRoom: React.FC<JoinRoomTypes> = ({setLiveApp}) => {
     event.preventDefault();
     if (roomPin.length !== 6) return;
     asyncEmit('join room', roomPin)
-      .then((res: RoomTypes | string) => {
-        if (res !== 'Invalid room' && res !== 'Already in the room') {
-          const room = res as RoomTypes;
+      .then((res: RoomResponseTypes | string) => {
+        if (typeof res !== 'string') {
+          const room = res as RoomResponseTypes;
           socket.joinedRoomID = room.room_id as string;
-          setLiveApp({type: 'roomDetails', value: room, userID: socket.userID as string, view: 'select-username'})
+          setLiveApp({
+            type: 'roomDetails', 
+            value: {
+              questions: JSON.parse(room.questions) as WordTypes[],
+              answers: room.answers.map(a => JSON.parse(a)) as AnswerTypes[],
+              roomPin: parseInt(room.room_pin),
+              roundEnded: room.roundEnded === 'true',
+              roundStarted: room.roundStarted === 'true'
+              }, 
+            userID: socket.userID as string, view: 'select-username'})
         } else {
           setLiveApp({type: 'roomError', value: res});
         }
