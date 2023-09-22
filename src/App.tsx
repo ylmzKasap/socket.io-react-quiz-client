@@ -145,7 +145,7 @@ const App: React.FC = () => {
   return (
     <div id="app">
       {!sessionFetched ? <div className="center-content">
-          <div className="big-header">Loading...</div>
+          <div className="big-header">{roomError ? 'Connection failed' : 'Loading...'}</div>
         </div> 
        : connectError ? <div className="center-content">
           <div className="big-header red">{connectError}</div>
